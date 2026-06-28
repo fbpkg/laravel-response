@@ -2,6 +2,7 @@
 
 namespace Fbpkg\LaravelResponse;
 
+use Illuminate\Validation\Validator;
 use Illuminate\Http\JsonResponse;
 
 class LaravelResponse
@@ -51,6 +52,16 @@ class LaravelResponse
     public function errors(array $errors): self
     {
         $this->payload['errors'] = $errors;
+
+        return $this;
+    }
+
+    /**
+     * Attach validation errors into meta (Laravel-style formatted)
+     */
+    public function validation(Validator $validator): self
+    {
+        $this->payload['meta']['validation'] = $validator->errors()->toArray();
 
         return $this;
     }
