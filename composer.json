@@ -38,7 +38,10 @@
     "laravel": {
       "providers": [
         "Fbpkg\\LaravelResponse\\ResponseServiceProvider"
-      ]
+      ],
+      "aliases": {
+        "LaravelResponse": "Fbpkg\\LaravelResponse\\Facades\\LaravelResponse"
+      }
     }
   },
   "minimum-stability": "stable",
