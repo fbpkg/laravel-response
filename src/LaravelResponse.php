@@ -11,7 +11,11 @@ class LaravelResponse
     protected int $status = 200;
 
     /**
-     * Success response
+     * Set success response.
+     * 
+     * @param string $message Success message
+     * @param int $status HTTP status code (default: 200)
+     * @return self
      */
     public function success(string $message = 'OK', int $status = 200): self
     {
@@ -24,7 +28,11 @@ class LaravelResponse
     }
 
     /**
-     * Error response
+     * Set error response.
+     * 
+     * @param string $message Error message
+     * @param int $status HTTP status code (default: 500)
+     * @return self
      */
     public function error(string $message = 'Error', int $status = 500): self
     {
@@ -37,7 +45,23 @@ class LaravelResponse
     }
 
     /**
-     * Attach data
+     * Set HTTP status code.
+     *
+     * @param int $status HTTP status code
+     * @return self
+     */
+    public function status(int $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Attach main data payload.
+     * 
+     * @param mixed $data Any data (array, object, collection, etc.)
+     * @return self
      */
     public function data(mixed $data): self
     {
@@ -47,7 +71,24 @@ class LaravelResponse
     }
 
     /**
-     * Attach validation errors (optional but useful early)
+     * Add a single metadata key (overwrites if key exists).
+     * 
+     * @param string $key Metadata key
+     * @param mixed $value Metadata value
+     * @return self
+     */
+    public function withMeta(string $key, mixed $value): self
+    {
+        $this->payload['meta'][$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Attach main errors payload.
+     * 
+     * @param array $errors
+     * @return self
      */
     public function errors(array $errors): self
     {
@@ -57,33 +98,44 @@ class LaravelResponse
     }
 
     /**
-     * Attach validation errors into meta (Laravel-style formatted)
+     * Attach Laravel validation errors to meta.
+     * 
+     * @param Validator $validator
+     * @return self
      */
     public function validation(Validator $validator): self
     {
-        $this->payload['meta']['validation'] = $validator->errors()->toArray();
-
-        return $this;
+        return $this->withMeta(
+            'validation',
+            $validator->errors()->toArray()
+        );
     }
 
     /**
-     * UI alert meta (frontend hint)
+     * Add UI alert hints for frontend.
+     * 
+     * @param string $type Alert type: 'success', 'error', 'warning', 'info'
+     * @param string|null $message Alert message (optional, will use main message if null)
+     * @return self
      */
-    public function alert(string $type, string $message = null): self
+    public function alert(string $type, ?string $message = null): self
     {
-        $this->payload['meta']['alert'] = [
+        return $this->withMeta('alert', [
             'type' => $type,
             'message' => $message,
-        ];
-
-        return $this;
+        ]);
     }
 
     /**
-     * Final response output
+     * Send JSON response.
+     * 
+     * @return JsonResponse
      */
     public function send(): JsonResponse
     {
-        return new JsonResponse($this->payload, $this->status);
+        return response()->json(
+            $this->payload,
+            $this->status
+        );
     }
 }

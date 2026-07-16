@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static \Fbpkg\LaravelResponse\LaravelResponse success(string $message = 'OK', int $status = 200)
  * @method static \Fbpkg\LaravelResponse\LaravelResponse error(string $message = 'Error', int $status = 500)
+ * @method static \Fbpkg\LaravelResponse\LaravelResponse status(int $status)
  * @method static \Fbpkg\LaravelResponse\LaravelResponse data(mixed $data)
+ * @method static \Fbpkg\LaravelResponse\LaravelResponse withMeta(string $key, mixed $value)
  * @method static \Fbpkg\LaravelResponse\LaravelResponse errors(array $errors)
  * @method static \Fbpkg\LaravelResponse\LaravelResponse validation(\Illuminate\Validation\Validator $validator)
  * @method static \Fbpkg\LaravelResponse\LaravelResponse alert(string $type, ?string $message = null)
